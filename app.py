@@ -1,18 +1,20 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
 import numpy as np
 import tensorflow as tf
-import os
 import psycopg2
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
 
 
-modelo = tf.keras.models.load_model('modelo_entrenado_final.h5')
+modelo = tf.keras.models.load_model('modeloDEC.h5')
+model = tf.keras.models.load_model('modeloDEC') 
 
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
+    #return psycopg2.connect('postgresql://db_unfv_ver5_user:rTxeXCWafkztYkNnhrRPZCnBIqATGP1c@dpg-d13fbvk9c44c7399ca1g-a.oregon-postgres.render.com/db_unfv_ver5')
 
 @app.route('/')
 def home():
