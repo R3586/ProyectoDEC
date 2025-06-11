@@ -5,17 +5,27 @@ import psycopg2
 from datetime import datetime
 import os
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # Desactiva GPU
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
 
+# Fix para InputLayer y otras capas problemáticas
+custom_objects = {
+    'InputLayer': lambda cfg: tf.keras.layers.InputLayer(
+        input_shape=cfg['batch_shape'][1:] if 'batch_shape' in cfg else cfg.get('input_shape'),
+        dtype=cfg['dtype'],
+        name=cfg['name']
+    )
+}
 
-#modelo = tf.keras.models.load_model('modeloDEC.h5')
-#model = tf.keras.models.load_model('modeloDEC') 
-# Antes (obsoleto):
-model.save('modeloDEC.h5')
+try:
+    # Intenta cargar directamente el modelo en formato SavedModel (recomendado)
+    modelo = tf.keras.models.load_model('modeloDEC', custom_objects=custom_objects)
+except:
+    # Si falla, carga el .h5 y conviértelo a SavedModel
+    modelo = tf.keras.models.load_model('modeloDEC.h5', custom_objects=custom_objects)
+    modelo.save('modeloDEC', save_format='tf')  # Migra a formato nuevo
 
-# Ahora (formato correcto):
-model.save('modeloDEC', save_format='tf')  
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
     #return psycopg2.connect('postgresql://db_unfv_ver5_user:rTxeXCWafkztYkNnhrRPZCnBIqATGP1c@dpg-d13fbvk9c44c7399ca1g-a.oregon-postgres.render.com/db_unfv_ver5')
