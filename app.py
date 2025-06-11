@@ -9,9 +9,13 @@ app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
 
 
-modelo = tf.keras.models.load_model('modeloDEC.h5')
-model = tf.keras.models.load_model('modeloDEC') 
+#modelo = tf.keras.models.load_model('modeloDEC.h5')
+#model = tf.keras.models.load_model('modeloDEC') 
+# Antes (obsoleto):
+model.save('modeloDEC.h5')
 
+# Ahora (formato correcto):
+model.save('modeloDEC', save_format='tf')  
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
     #return psycopg2.connect('postgresql://db_unfv_ver5_user:rTxeXCWafkztYkNnhrRPZCnBIqATGP1c@dpg-d13fbvk9c44c7399ca1g-a.oregon-postgres.render.com/db_unfv_ver5')
