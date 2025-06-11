@@ -3,7 +3,6 @@ import psycopg2
 from datetime import datetime
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # Desactiva GPU
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
 def get_db_connection():
