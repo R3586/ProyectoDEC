@@ -1,10 +1,16 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
+import numpy as np
+import tensorflow as tf
+from keras.models import load_model
 import psycopg2
 from datetime import datetime
 import os
 
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
+
+
+modelo = load_model("modeloDEC.h5")
 
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
