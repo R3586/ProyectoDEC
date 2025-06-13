@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'
 
-modelo = tf.keras.models.load_model('model')
+modelo = tf.keras.models.load_model('modeloDEC.h5')
 def get_db_connection():
     return psycopg2.connect(os.getenv('DATABASE_URL'))
     #return psycopg2.connect('postgresql://db_unfv_ver5_user:rTxeXCWafkztYkNnhrRPZCnBIqATGP1c@dpg-d13fbvk9c44c7399ca1g-a.oregon-postgres.render.com/db_unfv_ver5')
@@ -272,4 +272,6 @@ def configuracion():
     return render_template('configuracion.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    if not os.path.exists(app.config ['UPLOAD_FOLDER']):
+        os.makedirs(app.config [ 'UPLOAD_FOLDER'])
+    app.run(debug=True, host="0.0.0.0", port=os.getenv("PORT", default=5000))
